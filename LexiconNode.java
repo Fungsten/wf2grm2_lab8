@@ -1,17 +1,19 @@
 import structure5.*;
 import java.util.Iterator;
 
-class LexiconNode implements Comparable {
+class LexiconNode implements Comparable{
     char letter;
     boolean isWord;
+    Vector<LexiconNode> node;
 
     // You also need a data structure for keeping track of the
     // children of this LexiconNode
-    Vector<LexiconNode> node = new Vector<LexiconNode>();
+    //Vector<LexiconNode> node = new Vector<LexiconNode>();
     // Constructor
     LexiconNode(char letter, boolean isWord) {
       this.letter = letter;
       this.isWord = isWord;
+      this.node = new Vector<LexiconNode>();
     }
 
     /* Compare this LexiconNode to another.  You should just
@@ -46,6 +48,7 @@ class LexiconNode implements Comparable {
       }
     }
 
+
     /* Get LexiconNode child for 'ch' out of child data structure */
     public LexiconNode getChild(char ch) {
       for (int i = 0; i < node.size(); i++){
@@ -68,7 +71,7 @@ class LexiconNode implements Comparable {
 
     /* Iterate over children */
     public Iterator<LexiconNode> iterator() {
-	    
+
     }
 
     public static void main(String args[]){
