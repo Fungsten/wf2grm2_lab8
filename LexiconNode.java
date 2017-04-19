@@ -71,7 +71,8 @@ class LexiconNode implements Comparable{
 
     /* Iterate over children */
     public Iterator<LexiconNode> iterator() {
-
+      Iterator<LexiconNode> iter = node.iterator();
+      return iter;
     }
 
     public static void main(String args[]){
