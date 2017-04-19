@@ -57,7 +57,7 @@ public class LexiconTrie implements Lexicon {
         return true;
       } else {
         for (int i = 0; i < this.wordList.size(); i++){
-          if (this.wordList.elementAt(i).startsWith(prefix)){
+          if (this.wordList.elementAt(i).toLowerCase().startsWith(prefix.toLowerCase())){
             return true;
           }
         }
@@ -67,9 +67,10 @@ public class LexiconTrie implements Lexicon {
 
     public Iterator<String> iterator() {
       Iterator<String> it = wordList.iterator();
-      it.sortAlphabetically();
+      //it.sortAlphabetically();
       return it;
     }
+
 
     public Set<String> suggestCorrections(String target, int maxDistance) {
       return null;
@@ -86,6 +87,6 @@ public class LexiconTrie implements Lexicon {
       chrisPratt.removeWord("top");
       System.out.println(chrisPratt.wordList.toString());
       System.out.println(chrisPratt.numWords());
-      System.out.println(chrisPratt.containsPrefix("to"));
+      System.out.println(chrisPratt.containsPrefix("so"));
     }
 }
