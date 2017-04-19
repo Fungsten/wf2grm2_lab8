@@ -18,8 +18,9 @@ class LexiconNode implements Comparable {
      * compare the characters stored at the Lexicon Nodes.
      */
 
-    public int compareTo(LexiconNode ln) {
-      return this.letter - ln.letter;
+    public int compareTo(Object o) {
+      //cast o to a lexicon node
+      return this.letter - ((LexiconNode)o).letter;
 
     }
 
@@ -32,9 +33,13 @@ class LexiconNode implements Comparable {
     public void addChild(LexiconNode ln) {
       if (node.contains(ln)){
       } else {
-        for (int i = 0; i < node.size(); i++){
-          if (ln.compareTo(node.elementAt(i)) < 0){
-            node.insertElementAt(ln, i - 1);
+        for (int i = 0; i <= node.size(); i++){
+          if (node.size() == 0 || ln.compareTo(node.elementAt(i)) > 0){
+            node.add(ln);
+            break;
+          } else if (ln.compareTo(node.elementAt(i)) < 0){
+            //System.out.println("i");
+            node.insertElementAt(ln, i);
             break;
           }
         }
@@ -48,6 +53,7 @@ class LexiconNode implements Comparable {
           return node.elementAt(i);
         }
       }
+      return null;
     }
 
     /* Remove LexiconNode child for 'ch' from child data structure */
@@ -62,17 +68,22 @@ class LexiconNode implements Comparable {
 
     /* Iterate over children */
     public Iterator<LexiconNode> iterator() {
-	     return null;
+	    
     }
 
     public static void main(String args[]){
       LexiconNode lex = new LexiconNode('g', false);
       LexiconNode xel = new LexiconNode('o', true);
       lex.addChild(xel);
-      System.out.println(lex.toString());
-      System.out.println(lex.getChild('o'));
+      System.out.println("Node to string: " + lex.node.toString());
+      System.out.println("The CHILD: " + lex.getChild('o'));
       LexiconNode lexluthor = new LexiconNode('g', false);
-      System.out.println(lexluthor.toString());
-      System.out.println(lexluthor.getChild('o'));
+      lex.addChild(lexluthor);
+      System.out.println("Node to string: " + lex.node.toString());
+      LexiconNode lexington = new LexiconNode('p', false);
+      lex.addChild(lexington);
+      System.out.println("Node to string: " + lex.node.toString());
+      lex.removeChild('p');
+      System.out.println("Node to string: " + lex.node.toString());
     }
 }
