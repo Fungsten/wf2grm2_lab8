@@ -7,7 +7,7 @@ class LexiconNode implements Comparable{
 
     // You also need a data structure for keeping track of the
     // children of this LexiconNode
-    Vector<LexiconNode> node;
+    Vector<LexiconNode> node = new Vector<LexiconNode>();
     // Constructor
     LexiconNode(char letter, boolean isWord) {
       this.letter = letter;
@@ -31,17 +31,17 @@ class LexiconNode implements Comparable{
 
     /* Add LexiconNode child to correct position in child data structure */
     public void addChild(LexiconNode ln) {
+      if (node.contains(ln)){
+      } else {
         for (int i = 0; i < node.size(); i++){
-          if (ln.letter.compareTo(node.elementAt(i).letter) == 0){
-            // Don't add
-          } else {
-            if (ln.letter.compareTo(node.elementAt(i).letter) < 0){
-              node.insertElementAt(ln, i - 1);
-              break;
+          if (ln.compareTo(node.elementAt(i)) < 0){
+            node.insertElementAt(ln, i - 1);
+            break;
           }
         }
       }
     }
+
 
     /* Get LexiconNode child for 'ch' out of child data structure */
     public LexiconNode getChild(char ch) {
@@ -55,7 +55,7 @@ class LexiconNode implements Comparable{
     /* Remove LexiconNode child for 'ch' from child data structure */
     public void removeChild(char ch) {
       for (int i = 0; i < node.size(); i++){
-        if (node.elementAt(i).letter.equalTo(ch)){
+        if (node.elementAt(i).letter - ch == 0){
           node.removeElementAt(i);
           break;
         }
