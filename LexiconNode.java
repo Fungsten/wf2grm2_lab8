@@ -1,25 +1,26 @@
 import structure5.*;
 import java.util.Iterator;
 
-class LexiconNode implements Comparable {
+class LexiconNode implements Comparable{
     char letter;
     boolean isWord;
 
     // You also need a data structure for keeping track of the
     // children of this LexiconNode
-    Vector<E> node = new Vector<E>();
+    Vector<LexiconNode> node;
     // Constructor
     LexiconNode(char letter, boolean isWord) {
       this.letter = letter;
       this.isWord = isWord;
+      this.node = new Vector<LexiconNode>();
     }
 
     /* Compare this LexiconNode to another.  You should just
      * compare the characters stored at the Lexicon Nodes.
      */
 
-    public int compareTo(Object o) {
-      return this.letter.compareTo(o.letter);
+    public int compareTo(LexiconNode ln) {
+      return this.letter - ln.letter;
 
     }
 
@@ -30,12 +31,13 @@ class LexiconNode implements Comparable {
 
     /* Add LexiconNode child to correct position in child data structure */
     public void addChild(LexiconNode ln) {
-      if (node.contains(ln)){
-      } else {
         for (int i = 0; i < node.size(); i++){
-          if (ln.letter.compareTo(node.elementAt(i).letter) < 0){
-            node.insertElementAt(ln, i - 1);
-            break;
+          if (ln.letter.compareTo(node.elementAt(i).letter) == 0){
+            // Don't add
+          } else {
+            if (ln.letter.compareTo(node.elementAt(i).letter) < 0){
+              node.insertElementAt(ln, i - 1);
+              break;
           }
         }
       }
@@ -44,7 +46,7 @@ class LexiconNode implements Comparable {
     /* Get LexiconNode child for 'ch' out of child data structure */
     public LexiconNode getChild(char ch) {
       for (int i = 0; i < node.size(); i++){
-        if (node.elementAt(i).letter.equalTo(ch)){
+        if (node.elementAt(i).letter - ch == 0){
           return node.elementAt(i);
         }
       }
