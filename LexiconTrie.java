@@ -26,7 +26,7 @@ public class LexiconTrie implements Lexicon {
           if (currentParent.getChild(ch) == null){
             //i am groot
             LexiconNode babygroot;
-            if (word.length() == 1){
+            if (i == word.length() - 1){
               babygroot = new LexiconNode(ch, true);
             } else {
               babygroot = new LexiconNode(ch, false);
@@ -38,6 +38,7 @@ public class LexiconTrie implements Lexicon {
             currentParent = currentParent.getChild(ch);
           }
         }
+        currentParent.isWord = true;
         return true;
       }
     }
@@ -54,14 +55,52 @@ public class LexiconTrie implements Lexicon {
       return counter;
     }
 
+    /*
+    if last child has a child,
+      change true tag to false tag
+
+    if last child does not have a child,
+      remove child
+      recurse
+    */
     public boolean removeWord(String word) {
       if (this.wordList.contains(word)){
         this.wordList.remove(word);
-        return true;
+
+        LexiconNode lastgroot = groot;
+        int trueCounter = 0;
+        for (int i = 0; i < word.length(); i++){
+          lastgroot = lastgroot.getChild(word.charAt(i));
+          if (lastgroot.isWord == true){
+            trueCounter++;
+          }
+        }
+        lastgroot.isWord = false;
+
+        Iterator<LexiconNode> subsequentWords = lastgroot.iterator();
+        //checks if the last node has any children, if not, execute order 66
+        if (subsequentWords.hasNext() == false){
+          LexiconNode currentgroot = groot;
+
+          for (int i = 0; i < word.length(); i++){
+            currentgroot = currentgroot.getChild(word.charAt(i));
+
+            if (currentgroot.isWord == true){
+              trueCounter--;
+
+              if (trueCounter == 1){
+                currentgroot.removeChild(word.charAt(i + 1));
+              }
+            }
+          }
+        }
+          return true;
       } else {
         return false;
       }
     }
+
+
 
     public int numWords() {
       return this.wordList.size();
@@ -96,6 +135,7 @@ public class LexiconTrie implements Lexicon {
     }
 
     public Set<String> matchRegex(String pattern){
+
       return null;
     }
 
@@ -111,10 +151,14 @@ public class LexiconTrie implements Lexicon {
       System.out.println(chrisPratt.containsPrefix("so"));
       chrisPratt.addWord("potato");
       chrisPratt.addWord("wow");
-      chrisPratt.addWord("wham");
+      chrisPratt.addWord("wha");
+      chrisPratt.addWord("wh");
+      //chrisPratt.addWord("whamo");
       System.out.println("Node to string: " + chrisPratt.groot.node.toString());
-      System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('o').letter);
-      System.out.println("Node size of w: " + chrisPratt.groot.getChild('w').node.size());
-      System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').letter);
+      System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
+      System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
+      chrisPratt.removeWord("wh");
+System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
+      System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
     }
 }
