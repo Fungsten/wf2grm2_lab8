@@ -5,21 +5,23 @@ import java.util.Iterator;
 public class LexiconTrie implements Lexicon {
 
     LexiconNode groot;
-    Vector<String> wordList;
+    //used as debugging tool
+    //Vector<String> wordList;
+    int wordCount= 0;
 
     LexiconTrie(){
       //I am Groot
       this.groot = new LexiconNode(' ', false);
-      this.wordList = new Vector<String>();
+      //this.wordList = new Vector<String>();
 
     }
 
 
     public boolean addWord(String word) {
-      if (this.wordList.contains(word)){
+      if (containsWord(word)){
         return false;
       } else {
-        this.wordList.add(word);
+        //this.wordList.add(word);
         LexiconNode currentParent = groot;
         for (int i = 0; i < word.length(); i++){
           char ch = word.charAt(i);
@@ -39,6 +41,7 @@ public class LexiconTrie implements Lexicon {
           }
         }
         currentParent.isWord = true;
+        wordCount++;
         return true;
       }
     }
@@ -64,8 +67,8 @@ public class LexiconTrie implements Lexicon {
       recurse
     */
     public boolean removeWord(String word) {
-      if (this.wordList.contains(word)){
-        this.wordList.remove(word);
+      if (containsWord(word)){
+        //this.wordList.remove(word);
 
         LexiconNode lastgroot = groot;
         int trueCounter = 0;
@@ -76,13 +79,14 @@ public class LexiconTrie implements Lexicon {
           }
         }
         lastgroot.isWord = false;
+        wordCount--;
 
         Iterator<LexiconNode> subsequentWords = lastgroot.iterator();
         //checks if the last node has any children, if not, execute order 66
         if (subsequentWords.hasNext() == false){
           LexiconNode currentgroot = groot;
 
-          for (int i = 0; i < word.length(); i++){
+          for (int i = 0; i < word.length() - 1; i++){
             currentgroot = currentgroot.getChild(word.charAt(i));
 
             if (currentgroot.isWord == true){
@@ -103,30 +107,43 @@ public class LexiconTrie implements Lexicon {
 
 
     public int numWords() {
-      return this.wordList.size();
+      return wordCount;
     }
 
     public boolean containsWord(String word){
-      return this.wordList.contains(word);
+      LexiconNode currentgroot = groot;
+      for (int i = 0; i < word.length(); i++){
+        if (currentgroot.getChild(word.charAt(i)) == null){
+          return false;
+        } else {
+          currentgroot = currentgroot.getChild(word.charAt(i));
+        }
+      }
+      return currentgroot.isWord;
     }
 
     public boolean containsPrefix(String prefix){
-      if (prefix.equals("")){
-        return true;
-      } else {
-        for (int i = 0; i < this.wordList.size(); i++){
-          if (this.wordList.elementAt(i).toLowerCase().startsWith(prefix.toLowerCase())){
-            return true;
-          }
+      LexiconNode currentgroot = groot;
+      for (int i = 0; i < prefix.length(); i++){
+        if (currentgroot.getChild(prefix.charAt(i)) == null){
+          return false;
+        } else {
+          currentgroot = currentgroot.getChild(prefix.charAt(i));
         }
-        return false;
       }
+      return true;
     }
 
-    public Iterator<String> iterator() {
-      Iterator<String> it = wordList.iterator();
-      //it.sortAlphabetically();
-      return it;
+    public Iterator<String> iterator(){
+      Vector<String> words = new Vector<String>();
+      LexiconNode currentGroot = groot;
+    }
+
+    protected String iterHelper(Vector<String> vector, LexiconNode currGroot) {
+      Iterator<LexiconNode> iter = currGroot.iterator();
+      while (iter.hasNext()){
+
+      }
     }
 
 
@@ -143,22 +160,23 @@ public class LexiconTrie implements Lexicon {
     //We are Groot.
     public static void main(String args[]){
       LexiconTrie chrisPratt =  new LexiconTrie();
-      //chrisPratt.addWordsFromFile("small.txt");
+      chrisPratt.addWordsFromFile("small.txt");
       //System.out.println(chrisPratt.wordList.toString());
-      //chrisPratt.removeWord("top");
+      chrisPratt.removeWord("top");
       //System.out.println(chrisPratt.wordList.toString());
       System.out.println(chrisPratt.numWords());
-      System.out.println(chrisPratt.containsPrefix("so"));
+      System.out.println(chrisPratt.containsPrefix("So"));
+      System.out.println(chrisPratt.containsWord("Son"));
       chrisPratt.addWord("potato");
       chrisPratt.addWord("wow");
       chrisPratt.addWord("wha");
       chrisPratt.addWord("wh");
-      //chrisPratt.addWord("whamo");
+      chrisPratt.addWord("whamo");
       System.out.println("Node to string: " + chrisPratt.groot.node.toString());
       System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
       System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       chrisPratt.removeWord("wh");
-System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
+      System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
     }
 }
