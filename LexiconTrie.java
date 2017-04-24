@@ -42,16 +42,20 @@ public class LexiconTrie implements Lexicon {
           char ch = word.charAt(i);
           if (currentParent.getChild(ch) == null){
             //i am groot
+            //System.out.println("child does not yet exist");
             LexiconNode babygroot;
             if (i == word.length() - 1){
               babygroot = new LexiconNode(ch, true);
+              //System.out.println("word created");
             } else {
               babygroot = new LexiconNode(ch, false);
+              //System.out.println("child created");
             }
             //addChild already checks for duplicates
             currentParent.addChild(babygroot);
             currentParent = babygroot;
           } else {
+            //System.out.println("child already exists");
             currentParent = currentParent.getChild(ch);
           }
         }
@@ -154,6 +158,7 @@ public class LexiconTrie implements Lexicon {
       LexiconNode currentGroot = groot;
       String word = "";
       Iterator<LexiconNode> iter = currentGroot.iterator();
+      //System.out.println(iter.hasNext());
       iterHelper(theDictionary, currentGroot, word, iter);
       Iterator<String> readDict = theDictionary.iterator();
       return readDict;
@@ -161,21 +166,28 @@ public class LexiconTrie implements Lexicon {
 
     protected void iterHelper(Vector<String> dict, LexiconNode currGroot, String word, Iterator<LexiconNode> iter) {
       // builds theDictionary
-      while (iter.hasNext()){
-        LexiconNode currChild = iter.next();
-        word = word + currChild.letter();
+      while (iter.hasNext()){ //so long as parent has children, will loop through them
+        LexiconNode currChild = iter.next(); //takes next child
+        System.out.println("base: " + word);
+        System.out.println("adding: " + currChild.letter);
+        word = word + currChild.letter(); //builds the word with the child's letter
+        System.out.println("result: " + word);
         if (currChild.isWord == true){
-          dict.add(word);
+          dict.add(word); //adds currently building word to dictionary if it's a word
+          System.out.println("entered to dictionary");
         }
-        Iterator<LexiconNode> childIter = currChild.iterator();
-        if (childIter.hasNext()){
-          LexiconNode anotherChild = childIter.next();
-          iterHelper(dict, anotherChild, word, childIter);
+        Iterator<LexiconNode> childIter = currChild.iterator(); //an iterator for the children of the child
+        if (childIter.hasNext()){ //condition that
+          //System.out.println("continue" + word);
+          iterHelper(dict, currChild, word, childIter);
+          word = "";
         } else {
           // Nothing following, need new String and to walk down new node
-          String newWord = "";
-          iterHelper(dict, currGroot, newWord, iter);
+          word = "";
+          iterHelper(dict, currGroot, word, iter);
         }
+
+        //iterHelper(dict, currChild, word, childIter);
       }
     }
 
@@ -188,11 +200,11 @@ public class LexiconTrie implements Lexicon {
       if (maxDistance <= 0){
         //use iterator and find the rest of the word, char for char
         //only adds letters that are matches
-        return suggestCorrections(target.subString(1, target.length()), maxDistance, groot.getChild())
+        return suggestCorrections(target.subString(1, target.length()), maxDistance)
       } else {
         maxDistance--;
         //adds all children without regard to matching
-        return suggestCorrections(target.subString(1, target.length()), maxDistance, groot.getChild())
+        return suggestCorrections(target.subString(1, target.length()), maxDistance)
       }
     }*/
     return null;
@@ -223,13 +235,13 @@ public class LexiconTrie implements Lexicon {
     //We are Groot.
     public static void main(String args[]){
       LexiconTrie chrisPratt =  new LexiconTrie();
-      chrisPratt.addWordsFromFile("small.txt");
+      //chrisPratt.addWordsFromFile("small.txt");
       //System.out.println(chrisPratt.wordList.toString());
-      chrisPratt.removeWord("top");
+      //chrisPratt.removeWord("top");
       //System.out.println(chrisPratt.wordList.toString());
       System.out.println(chrisPratt.numWords());
-      System.out.println(chrisPratt.containsPrefix("to"));
-      System.out.println(chrisPratt.containsWord("ton"));
+      //System.out.println("chrisPratt.containsPrefix(to)" + chrisPratt.containsPrefix("to"));
+      //System.out.println(chrisPratt.containsWord("ton"));
       chrisPratt.addWord("potato");
       chrisPratt.addWord("wow");
       chrisPratt.addWord("wha");
@@ -239,15 +251,14 @@ public class LexiconTrie implements Lexicon {
 
       Iterator<String> starLord = chrisPratt.iterator();
       while (starLord.hasNext()){
-        System.out.println(starLord.next());
+        System.out.println("iterator test: " + starLord.next());
+      //System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
+      //System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
+      //chrisPratt.removeWord("wh");
+      //System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
+      //System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
 
-      System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
-      System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
-      chrisPratt.removeWord("wh");
-      System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
-      System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
-
-
+      //Assert.pre(CND, "Error msg");
       }
     }
 }

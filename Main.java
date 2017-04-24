@@ -17,10 +17,10 @@ class Main {
      * the command loop that allows the user to enter commands until finished.
      *
      * Note that the syntax and structure for this entire class is a little odd.  This is
-     * mostly because it was translated from C++ code.  Do not get bogged 
+     * mostly because it was translated from C++ code.  Do not get bogged
      * down in the details.
      */
-    public static void main(String s[]) {	
+    public static void main(String s[]) {
 	Main m = new Main();
 	m.run();
     }
@@ -28,13 +28,13 @@ class Main {
     public void run() {
 	ReadStream in = new ReadStream();
 
-	System.out.println("Welcome to the Lexicon Tester. " + 
+	System.out.println("Welcome to the Lexicon Tester. " +
 			   "Hit <return> for list of commands.");
 	while (!done) {
 	    System.out.println("\nEnter command: ");
 	    String tokens[] = in.readLine().split(" ");
 	    if (!invokeCmd(tokens))
-		System.out.println("Unrecognized command \"" + tokens[0] + 
+		System.out.println("Unrecognized command \"" + tokens[0] +
 				   "\".  Hit <return> for list of commands.");
 	}
     }
@@ -42,7 +42,7 @@ class Main {
     abstract class Command {
 	String abbrev, name, usage, help;
 	int numArgs;
-	Command(String abbrev, String name, String usage, 
+	Command(String abbrev, String name, String usage,
 		String help, int numArgs) {
 	    this.abbrev = abbrev;
 	    this.name = name;
@@ -78,7 +78,7 @@ class Main {
 	new Command("p", "print", "Print", "Print all words in lexicon ", 0) {
 	    public void performOp(String commandTokens[]) { testIterator(commandTokens); }
 	},
-	new Command("s", "suggest", "Suggest <target> <dist>", 
+	new Command("s", "suggest", "Suggest <target> <dist>",
 		    "Find suggestions for target within distance", 2) {
 	    public void performOp(String commandTokens[]) { testSuggestions(commandTokens); }
 	},
@@ -92,11 +92,11 @@ class Main {
 	    public void performOp(String commandTokens[]) { testIterator(commandTokens); }
 	}
     };
-	
+
     /*
      * This method looks for a matching command in the list of
      * available options and if found, invokes the function pointer for
-     * that option. 
+     * that option.
      */
     boolean invokeCmd(String tokens[]) {
 	String userCmd = tokens[0];
@@ -107,14 +107,14 @@ class Main {
 	    }
 	    return true;
 	}
-	
+
 	for (int i = 0; i < commands.length; i++) {
 	    Command c = commands[i];
 	    if (userCmd.startsWith(c.abbrev) ||
 		userCmd.equals(c.name)) {
 		if (c.numArgs != tokens.length - 1) {
 		    System.out.println("The " + c.name + " command expects " + c.numArgs + " arguments.");
-		} else { 		    
+		} else {
 		    c.performOp(tokens);
 		    return true;
 		}
@@ -160,10 +160,10 @@ class Main {
     {
 	String str = commandTokens[1];
 	boolean contains = lex.containsPrefix(str);
-	System.out.println("Prefix \"" + str + "\" is" + (contains ? "" : " not") 
+	System.out.println("Prefix \"" + str + "\" is" + (contains ? "" : " not")
 			   + " contained in lexicon." );
 	contains = lex.containsWord(str);
-	System.out.println("Word \"" + str + "\" is" + (contains ? "" : " not") 
+	System.out.println("Word \"" + str + "\" is" + (contains ? "" : " not")
 			   + " contained in lexicon." );
     }
 
@@ -223,5 +223,5 @@ class Main {
 	Set matches = lex.matchRegex(pattern);
 	System.out.println(matches);
     }
-    
+
 }

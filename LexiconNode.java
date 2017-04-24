@@ -40,23 +40,24 @@ class LexiconNode implements Comparable{
       if (node.contains(ln)){
         // Do nothing
       } else {
-        for (int i = 0; i <= node.size(); ++i){
+        for (int i = 0; i <= node.size(); i++){
           if (node.size() == 0 || i >= node.size()){
-            System.out.println("I added " + ln.letter());
+            //System.out.println("I added " + ln.letter());
             node.add(ln);
             break;
           } else {
-            System.out.println("" + i);
-            System.out.println("I'm comparing " + ln.letter() + " to " + node.elementAt(i).letter());
+            //System.out.println("" + i);
+            //System.out.println("I'm comparing " + ln.letter() + " to " + node.elementAt(i).letter());
             if (ln.compareTo(node.elementAt(i)) > 0) {
               // char ln bigger than char i, must be inserted further down
               // so do nothing
-              System.out.println(ln.letter() + " is bigger than " + node.elementAt(i).letter());
-              ++i;
+              //System.out.println(ln.letter() + " is bigger than " + node.elementAt(i).letter());
+              //++i;
             } else {
               // i is now at the appropriate spot
               node.insertElementAt(ln, i);
-              System.out.println("I added " + ln.letter() + " to the node at " + i);
+              //System.out.println("I added " + ln.letter() + " to the node at " + i);
+              break;
             }
           }
         }
