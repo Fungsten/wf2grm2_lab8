@@ -1,3 +1,20 @@
+/*
+Will Fung and Grace Mazzarella
+
+would like their grader to know that they are trying not to do funny indention things,
+but that they very much like editing in Atom, which may or may not do funny things.
+Also, they were constantly pushing and pulling with Github, which might do weird
+things too.
+
+Thought Question:
+Using the trie-based implementation is more efficient. The trie saves memory space
+by not creating a massive vector the size of the Oxford dictionary, so there is efficiency
+in data to space ratio. One can also find most relevant spelling suggestions by
+following similar branches along a trie rather than sifting through the vector until
+reaching the desired word(s). The latter would save time in both creation of the
+data structure and in using it.
+*/
+
 import structure5.*;
 import java.util.Scanner;
 import java.util.Iterator;
@@ -6,13 +23,13 @@ public class LexiconTrie implements Lexicon {
 
     LexiconNode groot;
     //used as debugging tool
-    //Vector<String> wordList;
+    Vector<String> wordList;
     int wordCount= 0;
 
     LexiconTrie(){
       //I am Groot
       this.groot = new LexiconNode(' ', false);
-      //this.wordList = new Vector<String>();
+      this.wordList = new Vector<String>();
 
     }
 
@@ -135,14 +152,32 @@ public class LexiconTrie implements Lexicon {
     }
 
     public Iterator<String> iterator(){
-      Vector<String> words = new Vector<String>();
+      Vector<String> theDictionary = new Vector<String>();
       LexiconNode currentGroot = groot;
+      String word = "";
+      Iterator<LexiconNode> iter = currentGroot.iterator();
+      iterHelper(theDictionary, currentGroot, word, iter);
+      Iterator<String> readDict = theDictionary.iterator();
+      return readDict;
     }
 
-    protected String iterHelper(Vector<String> vector, LexiconNode currGroot) {
-      Iterator<LexiconNode> iter = currGroot.iterator();
+    protected void iterHelper(Vector<String> dict, LexiconNode currGroot, String word, Iterator<LexiconNode> iter) {
+      // builds theDictionary
       while (iter.hasNext()){
-
+        LexiconNode currChild = iter.next();
+        word = word + currChild.letter();
+        if (currChild.isWord == true){
+          dict.add(word);
+        }
+        Iterator<LexiconNode> childIter = currChild.iterator();
+        if (childIter.hasNext()){
+          LexiconNode anotherChild = childIter.next();
+          iterHelper(dict, anotherChild, word, childIter);
+        } else {
+          // Nothing following, need new String and to walk down new node
+          String newWord = "";
+          iterHelper(dict, currGroot, newWord, iter);
+        }
       }
     }
 
@@ -165,8 +200,8 @@ public class LexiconTrie implements Lexicon {
       chrisPratt.removeWord("top");
       //System.out.println(chrisPratt.wordList.toString());
       System.out.println(chrisPratt.numWords());
-      System.out.println(chrisPratt.containsPrefix("So"));
-      System.out.println(chrisPratt.containsWord("Son"));
+      System.out.println(chrisPratt.containsPrefix("to"));
+      System.out.println(chrisPratt.containsWord("ton"));
       chrisPratt.addWord("potato");
       chrisPratt.addWord("wow");
       chrisPratt.addWord("wha");
@@ -178,5 +213,10 @@ public class LexiconTrie implements Lexicon {
       chrisPratt.removeWord("wh");
       System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
+
+      Iterator<String> starLord = chrisPratt.iterator();
+      while (starLord.hasNext()){
+        System.out.println(starLord.next());
+      }
     }
 }
