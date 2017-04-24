@@ -30,9 +30,7 @@ public class LexiconTrie implements Lexicon {
       //I am Groot
       this.groot = new LexiconNode(' ', false);
       this.wordList = new Vector<String>();
-
     }
-
 
     public boolean addWord(String word) {
       if (containsWord(word)){
@@ -238,15 +236,18 @@ public class LexiconTrie implements Lexicon {
       chrisPratt.addWord("wh");
       chrisPratt.addWord("whamo");
       System.out.println("Node to string: " + chrisPratt.groot.node.toString());
+
+      Iterator<String> starLord = chrisPratt.iterator();
+      while (starLord.hasNext()){
+        System.out.println(starLord.next());
+
       System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
       System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       chrisPratt.removeWord("wh");
       System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
 
-      Iterator<String> starLord = chrisPratt.iterator();
-      while (starLord.hasNext()){
-        System.out.println(starLord.next());
+
       }
     }
 }

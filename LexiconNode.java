@@ -41,9 +41,10 @@ class LexiconNode implements Comparable{
         // Do nothing
       } else {
         for (int i = 0; i <= node.size(); ++i){
-          if (node.size() == 0){
+          if (node.size() == 0 || i >= node.size()){
             System.out.println("I added " + ln.letter());
             node.add(ln);
+            break;
           } else {
             System.out.println("" + i);
             System.out.println("I'm comparing " + ln.letter() + " to " + node.elementAt(i).letter());
@@ -52,12 +53,8 @@ class LexiconNode implements Comparable{
               // so do nothing
               System.out.println(ln.letter() + " is bigger than " + node.elementAt(i).letter());
               ++i;
-            }
-            // i is now at the appropriate spot
-            if (i == node.size()){
-              node.add(ln);
-              System.out.println("I added " + ln.letter() + " to the node");
             } else {
+              // i is now at the appropriate spot
               node.insertElementAt(ln, i);
               System.out.println("I added " + ln.letter() + " to the node at " + i);
             }
@@ -107,9 +104,14 @@ class LexiconNode implements Comparable{
       lex.addChild(child4);
       lex.addChild(child5);
       lex.addChild(child6);
-      Iterator<LexiconNode> go = lex.iterator();
+      /*Iterator<LexiconNode> go = lex.iterator();
       while (go.hasNext()){
         System.out.println(go.next().letter());
+      }*/
+      lex.removeChild('a');
+      Iterator<LexiconNode> go2 = lex.iterator();
+      while (go2.hasNext()){
+        System.out.println(go2.next().letter());
       }
     }
 }
