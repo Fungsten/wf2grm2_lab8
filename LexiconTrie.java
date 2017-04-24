@@ -174,11 +174,13 @@ public class LexiconTrie implements Lexicon {
         Iterator<LexiconNode> childIter = currChild.iterator(); //an iterator for the children of the child
         if (childIter.hasNext()){ //condition that
           //System.out.println("continue" + word);
+
           iterHelper(dict, currChild, word, childIter);
           word = word.substring(0, word.length() - 1); //resets word
+
         } else {
           // Nothing following, need new String and to walk down new node
-          //word = "";
+          word = word.substring(0, word.length() - 1);
         }
       }
     }
