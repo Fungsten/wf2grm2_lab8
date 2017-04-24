@@ -187,17 +187,48 @@ public class LexiconTrie implements Lexicon {
 
 
     public SetVector<String> suggestCorrections(String target, int maxDistance) {
-    LexiconNode currGroot = groot;
-    Iterator<LexiconNode> iter = currGroot.iterator();
-    SetVector<String> theDictionary = new SetVector<String>();
-    correctionsHelper(theDictionary, currGroot, target, iter, maxDistance);
-    return theDictionary;
-
+      LexiconNode currGroot = groot;
+      Iterator<LexiconNode> iter = currGroot.iterator();
+      SetVector<String> theDictionary = new SetVector<String>();
+      String word = "";
+      correctionsHelper(theDictionary, currGroot, target, word, iter, maxDistance);
+      return theDictionary;
   }
 
-  protected void correctionsHelper(SetVector<String> dict, LexiconNode currGroot, String target, Iterator<LexiconNode> iter, int maxDistance) {
-    for (int i = 0; i < target.length(); i++){
+  protected void correctionsHelper(SetVector<String> dict, LexiconNode currGroot, String target, String word, Iterator<LexiconNode> iter, int maxDistance) {
+    // builds theDictionary
+    while (iter.hasNext()){ //so long as parent has children, will loop through them
+      LexiconNode currChild = iter.next(); //takes next child
+      word = word + currChild.letter(); //builds the word with the child's letter
+      int currDistance = maxDistance;
+      for (int i = 0; i < word.length() && i < target.length(); ++i){
+          if (word.charAt(i) != target.charAt(i)){
+            --currDistance;
+        }
+      }
+      if (word.length() == target.length()){
+        if (currDistance >= 0){
+          if (currChild.isWord == true){
+            System.out.println(word);
+            dict.add(word); //adds currently building word to dictionary if it's a word
+          }
+        }
+      }
 
+      Iterator<LexiconNode> childIter = currChild.iterator(); //an iterator for the children of the child
+      if (childIter.hasNext()){ //condition that
+        //System.out.println("continue" + word);
+
+        correctionsHelper(dict, currChild, target, word, childIter, maxDistance);
+        word = word.substring(0, word.length() - 1); //resets word
+
+      } else {
+        // Nothing following, need new String and to walk down new node
+        word = word.substring(0, word.length() - 1);
+      }
+    }
+  }
+    /*for (int i = 0; i < target.length(); i++){
       String word = "";
       while (iter.hasNext()){ //so long as parent has children, will loop through them
         LexiconNode currChild = iter.next(); //takes next child
@@ -218,17 +249,17 @@ public class LexiconTrie implements Lexicon {
         }
       }
     }
-  }
+  }*/
 
-    public Set<String> matchRegex(String pattern){
-    Vector<String> matches = new Vector<String>();
+    public SetVector<String> matchRegex(String pattern){
+    SetVector<String> matches = new SetVector<String>();
     LexiconNode currGroot = groot;
     Iterator<LexiconNode> iter = currGroot.iterator();
     matchesHelper(pattern, matches, currGroot, iter);
-    return null;
+    return matches;
     }
 
-    protected void matchesHelper(String pattern, Vector<String> dictionary, LexiconNode currGroot, Iterator<LexiconNode> iter){
+    protected void matchesHelper(String pattern, SetVector<String> dictionary, LexiconNode currGroot, Iterator<LexiconNode> iter){
       String word = "";
         if (pattern.length() == 0){
           dictionary.add(word);
@@ -278,9 +309,9 @@ public class LexiconTrie implements Lexicon {
       LexiconTrie chrisPratt =  new LexiconTrie();
       chrisPratt.addWordsFromFile("small.txt");
 
-      Iterator<String> starLord = chrisPratt.iterator();
+      /*Iterator<String> starLord = chrisPratt.iterator();
       while (starLord.hasNext()){
-        System.out.println("iterator test: " + starLord.next());
+        System.out.println("iterator test: " + starLord.next());*/
       //System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
       //System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
       //chrisPratt.removeWord("wh");
@@ -290,4 +321,3 @@ public class LexiconTrie implements Lexicon {
       //Assert.pre(CND, "Error msg");
       }
     }
-}
