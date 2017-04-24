@@ -22,49 +22,42 @@ import java.util.Iterator;
 public class LexiconTrie implements Lexicon {
 
     LexiconNode groot;
-    //used as debugging tool
-    Vector<String> wordList;
+    //Vector<String> wordList;   //used as debugging tool
     int wordCount= 0;
 
     LexiconTrie(){
-      //I am Groot
-      this.groot = new LexiconNode(' ', false);
-      this.wordList = new Vector<String>();
+      this.groot = new LexiconNode(' ', false); //I am Groot
+      //this.wordList = new Vector<String>();   //used as debugging tool
     }
 
     public boolean addWord(String word) {
       if (containsWord(word)){
         return false;
       } else {
-        //this.wordList.add(word);
+        //this.wordList.add(word);    //used as debugging tool
         LexiconNode currentParent = groot;
         for (int i = 0; i < word.length(); i++){
           char ch = word.charAt(i);
           if (currentParent.getChild(ch) == null){
-            //i am groot
-            //System.out.println("child does not yet exist");
-            LexiconNode babygroot;
+            LexiconNode babygroot; //i am groot
             if (i == word.length() - 1){
-              babygroot = new LexiconNode(ch, true);
-              //System.out.println("word created");
+              babygroot = new LexiconNode(ch, true); //if about to add a node which is the end of a word
             } else {
-              babygroot = new LexiconNode(ch, false);
-              //System.out.println("child created");
+              babygroot = new LexiconNode(ch, false);//if not
             }
-            //addChild already checks for duplicates
-            currentParent.addChild(babygroot);
-            currentParent = babygroot;
+            currentParent.addChild(babygroot);//addChild already checks for duplicates
+            currentParent = babygroot; //switches over to looking at the child node
           } else {
-            //System.out.println("child already exists");
             currentParent = currentParent.getChild(ch);
           }
         }
         currentParent.isWord = true;
-        wordCount++;
+        wordCount++; //have a parallel
         return true;
       }
     }
 
+    //scanner to add words from a text file
     public int addWordsFromFile(String filename) {
 
       Scanner scan = new Scanner(new FileStream(filename));
@@ -228,35 +221,13 @@ public class LexiconTrie implements Lexicon {
       }
     }
   }
-    /*for (int i = 0; i < target.length(); i++){
-      String word = "";
-      while (iter.hasNext()){ //so long as parent has children, will loop through them
-        LexiconNode currChild = iter.next(); //takes next child
-        if (currChild.getChild(target.charAt(i)) == null && maxDistance > 0){
-          word = word + currChild.letter();
-          if (word.length() == target.length()){
-            dict.add(word);
-          }
-          if (currChild.letter() == target.charAt(i)){
-            // Do nothing
-          } else {
-            maxDistance--;
-          }
-        } else if (currChild.getChild(target.charAt(i)) == null){
-          word = "";
-        } else {
-          currChild = currChild.getChild(target.charAt(i));
-        }
-      }
-    }
-  }*/
 
     public SetVector<String> matchRegex(String pattern){
-    SetVector<String> matches = new SetVector<String>();
-    LexiconNode currGroot = groot;
-    Iterator<LexiconNode> iter = currGroot.iterator();
-    matchesHelper(pattern, matches, currGroot, iter);
-    return matches;
+      SetVector<String> matches = new SetVector<String>();
+      LexiconNode currGroot = groot;
+      Iterator<LexiconNode> iter = currGroot.iterator();
+      matchesHelper(pattern, matches, currGroot, iter);
+      return matches;
     }
 
     protected void matchesHelper(String pattern, SetVector<String> dictionary, LexiconNode currGroot, Iterator<LexiconNode> iter){
@@ -294,10 +265,12 @@ public class LexiconTrie implements Lexicon {
           if (currGroot.getChild(pattern.charAt(0)) == null){
             word = ""; //no matches, erases currently building word
           } else {
-            currGroot = iter.next(); //takes next child
-            word = word + currGroot.letter(); //builds the word with the child's letter
-            Iterator<LexiconNode> childIter = currGroot.iterator(); //an iterator for the children of the child
-            matchesHelper(pattern.substring(1, pattern.length()), dictionary, currGroot, childIter);
+            while (iter.hasNext()){
+              currGroot = iter.next(); //takes next child
+              word = word + currGroot.letter(); //builds the word with the child's letter
+              Iterator<LexiconNode> childIter = currGroot.iterator(); //an iterator for the children of the child
+              matchesHelper(pattern.substring(1, pattern.length()), dictionary, currGroot, childIter);
+            }
           }
         }
 
