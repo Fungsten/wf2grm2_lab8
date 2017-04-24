@@ -6,6 +6,8 @@ but that they very much like editing in Atom, which may or may not do funny thin
 Also, they were constantly pushing and pulling with Github, which might do funny
 things too.
 
+Lab was fun until regex
+
 Thought Question:
 Using the trie-based implementation is more efficient. The trie saves memory space
 by not creating a massive vector the size of the Oxford dictionary, so there is efficiency
@@ -232,7 +234,40 @@ public class LexiconTrie implements Lexicon {
     }
 
     protected void matchesHelper(String pattern, SetVector<String> dictionary, LexiconNode currGroot, Iterator<LexiconNode> iter){
+      String currSymbol;
+      String currPattern;
       String word = "";
+      if (pattern == ""){
+        //done
+      } else {
+        currSymbol = pattern.substring(0,1);
+        currPattern = pattern.substring(1);
+      }
+      if (currSymbol != "*" && currSymbol != "?"){
+        if (currGroot.getChild(currSymbol) != null){
+          word = word + currGroot.getChild(currSymbol).letter();
+        }
+      }
+      while (iter.hasNext()){ //so long as parent has children, will loop through them
+        LexiconNode currChild = iter.next(); //takes next child
+        word = word + currChild.letter(); //builds the word with the child's letter
+        if (currChild.isWord == true){
+          dict.add(word); //adds currently building word to dictionary if it's a word
+        }
+        Iterator<LexiconNode> childIter = currChild.iterator(); //an iterator for the children of the child
+        if (childIter.hasNext()){ //condition that
+          //System.out.println("continue" + word);
+
+          matchesHelper(currPattern, matches, currChild, iter);
+          word = word.substring(0, word.length() - 1); //resets word to closest parent with other children
+
+        } else {
+          // Nothing following, need new String and to walk down new node
+          word = word.substring(0, word.length() - 1);
+        }
+      }
+    }
+      /*String word = "";
         if (pattern.length() == 0){
           dictionary.add(word);
         }
@@ -274,8 +309,7 @@ public class LexiconTrie implements Lexicon {
             }
           }
         }
-
-    }
+    }*/
 
 
     //We are Groot.
