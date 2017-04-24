@@ -183,11 +183,41 @@ public class LexiconTrie implements Lexicon {
 
 
     public Set<String> suggestCorrections(String target, int maxDistance) {
-      return null;
-    }
+    /*Set<String> corrections = new Set<String>();
+    if (target.length() == 0){
+      return corrections;
+    } else {
+      if (maxDistance <= 0){
+        //use iterator and find the rest of the word, char for char
+        //only adds letters that are matches
+        return suggestCorrections(target.subString(1, target.length()), maxDistance, groot.getChild())
+      } else {
+        maxDistance--;
+        //adds all children without regard to matching
+        return suggestCorrections(target.subString(1, target.length()), maxDistance, groot.getChild())
+      }
+    }*/
+    return null;
+  }
 
     public Set<String> matchRegex(String pattern){
+    /*Set<String> matches = new Set<Strings>();
 
+    char targetChar = pattern.charAt(0);
+    if (pattern.length() == 0){
+      return matches;
+    }
+    if (targetChar.equals('*')){
+      //check for *
+      return matchRegex(pattern.subString(1, pattern.length()));
+    } else if (targetChar.equals('?'){
+      //check for ?
+      return matchRegex(pattern.subString(1, pattern.length()));
+    } else if (currentgroot.getChild(targetChar) == null){
+      return
+    } else {
+        return matchRegex(pattern.subString(1, pattern.length()));
+      }*/
       return null;
     }
 
