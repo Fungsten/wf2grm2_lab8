@@ -186,17 +186,16 @@ public class LexiconTrie implements Lexicon {
     }
 
 
-    public Set<String> suggestCorrections(String target, int maxDistance) {
-    Vector<String> corrections;
+    public SetVector<String> suggestCorrections(String target, int maxDistance) {
     LexiconNode currGroot = groot;
     Iterator<LexiconNode> iter = currGroot.iterator();
-    Vector<String> theDictionary = new Vector<String>();
+    SetVector<String> theDictionary = new SetVector<String>();
     correctionsHelper(theDictionary, currGroot, target, iter, maxDistance);
-    return null;
+    return theDictionary;
 
   }
 
-  protected void correctionsHelper(Vector<String> dict, LexiconNode currGroot, String target, Iterator<LexiconNode> iter, int maxDistance) {
+  protected void correctionsHelper(SetVector<String> dict, LexiconNode currGroot, String target, Iterator<LexiconNode> iter, int maxDistance) {
     for (int i = 0; i < target.length(); i++){
 
       String word = "";
@@ -207,7 +206,8 @@ public class LexiconTrie implements Lexicon {
           if (word.length() == target.length()){
             dict.add(word);
           }
-          if (currChild.letter == target.charAt(i)){
+          if (currChild.letter() == target.charAt(i)){
+            // Do nothing
           } else {
             maxDistance--;
           }
