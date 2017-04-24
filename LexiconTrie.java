@@ -3,7 +3,7 @@ Will Fung and Grace Mazzarella
 
 would like their grader to know that they are trying not to do funny indention things,
 but that they very much like editing in Atom, which may or may not do funny things.
-Also, they were constantly pushing and pulling with Github, which might do weird
+Also, they were constantly pushing and pulling with Github, which might do funny
 things too.
 
 Thought Question:
@@ -23,7 +23,8 @@ public class LexiconTrie implements Lexicon {
 
     LexiconNode groot;
     //Vector<String> wordList;   //used as debugging tool
-    int wordCount= 0;
+    int wordCount= 0; //have a parallel word counter to decrease time complexity
+                      //space used to save this value is minimal
 
     LexiconTrie(){
       this.groot = new LexiconNode(' ', false); //I am Groot
@@ -48,11 +49,11 @@ public class LexiconTrie implements Lexicon {
             currentParent.addChild(babygroot);//addChild already checks for duplicates
             currentParent = babygroot; //switches over to looking at the child node
           } else {
-            currentParent = currentParent.getChild(ch);
+            currentParent = currentParent.getChild(ch); //since child already exists, simply switches to existing child node
           }
         }
-        currentParent.isWord = true;
-        wordCount++; //have a parallel
+        currentParent.isWord = true; //having arrived at the end of the word, the flag is made sure to be set to true
+        wordCount++; //fun time saving
         return true;
       }
     }
@@ -80,21 +81,22 @@ public class LexiconTrie implements Lexicon {
     */
     public boolean removeWord(String word) {
       if (containsWord(word)){
-        //this.wordList.remove(word);
+        //this.wordList.remove(word);  //used as debugging tool
 
         LexiconNode lastgroot = groot;
         int trueCounter = 0;
         for (int i = 0; i < word.length(); i++){
           lastgroot = lastgroot.getChild(word.charAt(i));
           if (lastgroot.isWord == true){
-            trueCounter++;
+            trueCounter++; //this is used to count how many nodes down are there nodes solely for the word being removed
           }
         }
-        lastgroot.isWord = false;
-        wordCount--;
+        lastgroot.isWord = false; //changes word from wordliness to unwordliness
+        wordCount--; //more fun time saving
 
         Iterator<LexiconNode> subsequentWords = lastgroot.iterator();
         //checks if the last node has any children, if not, execute order 66
+        //aka, actually removes the child node from the trie like the extra credit thing said we could do
         if (subsequentWords.hasNext() == false){
           LexiconNode currentgroot = groot;
 
@@ -102,36 +104,36 @@ public class LexiconTrie implements Lexicon {
             currentgroot = currentgroot.getChild(word.charAt(i));
 
             if (currentgroot.isWord == true){
-              trueCounter--;
+              trueCounter--; //counts the complete, non-removal words
 
-              if (trueCounter == 1){
-                currentgroot.removeChild(word.charAt(i + 1));
+              if (trueCounter == 1){ //when this reaches 1, the nodes hereafter are solely for the word being removed
+                currentgroot.removeChild(word.charAt(i + 1)); //guillotined!
               }
             }
           }
         }
-          return true;
+          return true; //heads will roll
       } else {
-        return false;
+        return false; //failed to find the word in the lexicon
       }
     }
 
 
 
     public int numWords() {
-      return wordCount;
+      return wordCount; //time saver for both running the code and writing it~!
     }
 
     public boolean containsWord(String word){
       LexiconNode currentgroot = groot;
       for (int i = 0; i < word.length(); i++){
         if (currentgroot.getChild(word.charAt(i)) == null){
-          return false;
+          return false; //looks for each letter in word and if there is ever a null exception, it has failed
         } else {
-          currentgroot = currentgroot.getChild(word.charAt(i));
+          currentgroot = currentgroot.getChild(word.charAt(i)); //success with one letter, then move onto the next one
         }
       }
-      return currentgroot.isWord;
+      return currentgroot.isWord; //returns isWord rather than true in case word isn't, well, a word
     }
 
     public boolean containsPrefix(String prefix){
@@ -143,16 +145,16 @@ public class LexiconTrie implements Lexicon {
           currentgroot = currentgroot.getChild(prefix.charAt(i));
         }
       }
-      return true;
+      return true; //very similar to containsWord, except will be true always if passed
     }
 
     public Iterator<String> iterator(){
-      Vector<String> theDictionary = new Vector<String>();
-      LexiconNode currentGroot = groot;
-      String word = "";
-      Iterator<LexiconNode> iter = currentGroot.iterator();
-      iterHelper(theDictionary, currentGroot, word, iter);
-      Iterator<String> readDict = theDictionary.iterator();
+      Vector<String> theDictionary = new Vector<String>(); //where new words will be stored
+      LexiconNode currentGroot = groot; //
+      String word = ""; //an empty string to build into new words
+      Iterator<LexiconNode> iter = currentGroot.iterator(); //the hot knife
+      iterHelper(theDictionary, currentGroot, word, iter); //the bread and butter, spread by said hot knife
+      Iterator<String> readDict = theDictionary.iterator(); //moves dictionary info into iterator format
       return readDict;
     }
 
@@ -169,7 +171,7 @@ public class LexiconTrie implements Lexicon {
           //System.out.println("continue" + word);
 
           iterHelper(dict, currChild, word, childIter);
-          word = word.substring(0, word.length() - 1); //resets word
+          word = word.substring(0, word.length() - 1); //resets word to closest parent with other children
 
         } else {
           // Nothing following, need new String and to walk down new node
@@ -179,8 +181,8 @@ public class LexiconTrie implements Lexicon {
     }
 
 
-    public SetVector<String> suggestCorrections(String target, int maxDistance) {
-      LexiconNode currGroot = groot;
+    public SetVector<String> suggestCorrections(String target, int maxDistance) { //oh god this actually works
+      LexiconNode currGroot = groot; //a lot of the same iterator goodness
       Iterator<LexiconNode> iter = currGroot.iterator();
       SetVector<String> theDictionary = new SetVector<String>();
       String word = "";
@@ -196,13 +198,12 @@ public class LexiconTrie implements Lexicon {
       int currDistance = maxDistance;
       for (int i = 0; i < word.length() && i < target.length(); ++i){
           if (word.charAt(i) != target.charAt(i)){
-            --currDistance;
+            --currDistance; //subtracts running distance everytime a 'wrong' letter is matched
         }
       }
-      if (word.length() == target.length()){
-        if (currDistance >= 0){
-          if (currChild.isWord == true){
-            System.out.println(word);
+      if (word.length() == target.length()){ //we've found a potential candidate
+        if (currDistance >= 0){ //only checks potential candidates, not the whole lexicon
+          if (currChild.isWord == true){ //of course, we only want combinations of letters that are also words
             dict.add(word); //adds currently building word to dictionary if it's a word
           }
         }
@@ -222,7 +223,7 @@ public class LexiconTrie implements Lexicon {
     }
   }
 
-    public SetVector<String> matchRegex(String pattern){
+    public SetVector<String> matchRegex(String pattern){ //oh god this does NOT work
       SetVector<String> matches = new SetVector<String>();
       LexiconNode currGroot = groot;
       Iterator<LexiconNode> iter = currGroot.iterator();
@@ -281,16 +282,5 @@ public class LexiconTrie implements Lexicon {
     public static void main(String args[]){
       LexiconTrie chrisPratt =  new LexiconTrie();
       chrisPratt.addWordsFromFile("small.txt");
-
-      /*Iterator<String> starLord = chrisPratt.iterator();
-      while (starLord.hasNext()){
-        System.out.println("iterator test: " + starLord.next());*/
-      //System.out.println("wha is word?: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').isWord);
-      //System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
-      //chrisPratt.removeWord("wh");
-      //System.out.println("wh is word?: " + chrisPratt.groot.getChild('w').getChild('h').isWord);
-      //System.out.println("Node to string: " + chrisPratt.groot.getChild('w').getChild('h').getChild('a').letter);
-
-      //Assert.pre(CND, "Error msg");
       }
     }
